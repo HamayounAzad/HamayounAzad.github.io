@@ -189,6 +189,11 @@ body{
 	line-height: 22px;
     font-family: PoiretOne;
 }
+.Certificate{
+    text-decoration: none;
+    color: white;
+    font-family: PoiretOne;
+}
 
 /*  */
 .wrapper{
