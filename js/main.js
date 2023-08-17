@@ -1,8 +1,6 @@
 /*
-* Template Name: Leven - Resume / CV / vCard Template
-* Author: lmpixels
-* Author URL: http://themeforest.net/user/lmpixels
-* Version: 1.5.0
+* © Mohammad Hamayoun Azad
+* ® HA
 */
 
 (function($) {
