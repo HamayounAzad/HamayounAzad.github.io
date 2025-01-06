@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Hamayoun Azad</title>
+    <link rel="icon" type="image/x-icon" href="./metadata/Logo/Logo Non zoom.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00F5FF',
+                        'neon-purple': '#8A2BE2',
+                        'deep-dark': '#0A0A0A',
+                        'glass': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'cyber': ['Orbitron', 'sans-serif'],
+                        'futura': ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cyber-bg {
+            background: linear-gradient(to bottom right, #0A0A0A, #4b0168);
+            position: relative;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, rgba(0, 245, 255, 0.2), rgba(138, 43, 226, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+
+        .portfolio-item:hover::before {
+            opacity: 1;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Preview Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .preview-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-image {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.2);
+        }
+
+        .preview-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #00f5ff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 245, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .preview-close:hover {
+            background: rgba(0, 245, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 99999;
+            opacity: 0.9;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .whatsapp-float:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #25D366;
+            opacity: 0.3;
+            z-index: -1;
+            animation: pulse 2s infinite;
+            top: 0;
+            left: 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.3); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        /* Mobile Menu Styles */
+        #mobileMenu {
+            background: rgba(13, 13, 13, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        #mobileMenu a {
+            font-size: 1.25rem;
+            padding: 0.75rem 1.5rem;
+            display: block;
+            text-align: center;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        #mobileMenu a:hover {
+            color: #00f5ff;
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        #closeMenu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 60;
+        }
+
+        #closeMenu:hover {
+            color: #00f5ff;
+        }
+
+        .mobile-menu-content {
+            padding: 4rem 2rem;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .mobile-menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-menu-section {
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="cyber-bg text-white font-futura">
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-2xl font-cyber font-bold">
+                    <span class="text-neon-blue">Hamayoun</span> Azad
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-neon-blue transition-colors font-cyber">Home</a>
+                    <div class="relative group">
+                        <button class="text-neon-blue transition-colors flex items-center font-cyber">
+                            Portfolio
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-deep-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
+                            <div class="py-1">
+                                <a href="portfolio.html" class="block px-4 py-2 text-neon-blue font-cyber">Graphical</a>
+                                <a href="motion.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Motion</a>
+                                <a href="programming.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Programming</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="index.html#skills" class="hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="index.html#education" class="hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="index.html#experience" class="hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="index.html#contact" class="hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+                <button class="md:hidden" id="menuButton">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="fixed inset-0 z-50 hidden">
+                <button id="closeMenu">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="mobile-menu-content">
+                    <div class="mobile-menu-items">
+                        <a href="index.html" class="font-cyber">Home</a>
+                        <div class="mobile-menu-section">
+                            <div class="text-neon-blue font-cyber flex items-center justify-center text-xl">
+                                Portfolio
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <a href="portfolio.html" class="font-cyber text-neon-blue bg-neon-blue bg-opacity-10">Graphical</a>
+                            <a href="motion.html" class="font-cyber">Motion</a>
+                            <a href="programming.html" class="font-cyber">Programming</a>
+                        </div>
+                        <a href="index.html#skills" class="font-cyber">Skills</a>
+                        <a href="index.html#education" class="font-cyber">Education</a>
+                        <a href="index.html#experience" class="font-cyber">Experience</a>
+                        <a href="index.html#contact" class="font-cyber">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Portfolio Hero -->
+        <section class="min-h-[50vh] flex items-center justify-center pt-20">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-6xl font-cyber font-bold mb-6">Graphical <span class="text-neon-blue">Portfolio</span></h1>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Explore my journey through digital art, graphic design, and visual storytelling. Each piece represents a unique story and creative vision.
+                </p>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="portfolio-grid" id="portfolioGrid">
+                    <!-- Portfolio items will be added here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Preview Modal -->
+        <div class="preview-modal" id="previewModal">
+            <div class="preview-content">
+                <button class="preview-close" id="previewClose">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="" alt="Preview" class="preview-image" id="previewImage">
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/+93766742523" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Mobile menu functionality
+        const menuButton = document.getElementById('menuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenu = document.getElementById('closeMenu');
+
+        function toggleMenu() {
+            const isOpen = mobileMenu.classList.contains('hidden');
+            if (isOpen) {
+                mobileMenu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileMenu.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        menuButton.addEventListener('click', toggleMenu);
+        closeMenu.addEventListener('click', toggleMenu);
+
+        const mobileLinks = mobileMenu.getElementsByTagName('a');
+        for (const link of mobileLinks) {
+            link.addEventListener('click', toggleMenu);
+        }
+
+        // Portfolio Grid
+        const works = [
+            { src: './assets/gallery/1.jpg' },
+            { src: './assets/gallery/2.jpg' },
+            { src: './assets/gallery/3.jpg' },
+            { src: './assets/gallery/4.jpg' },
+            { src: './assets/gallery/5.jpg' },
+            { src: './assets/gallery/6.jpg' },
+            { src: './assets/gallery/7.jpg' },
+            { src: './assets/gallery/8.jpg' },
+            { src: './assets/gallery/9.jpg' },
+            { src: './assets/gallery/10.jpg' },
+            { src: './assets/gallery/11.jpg' },
+            { src: './assets/gallery/12.jpg' },
+            { src: './assets/gallery/13.jpg' },
+            { src: './assets/gallery/14.jpg' },
+            { src: './assets/gallery/15.jpg' },
+            { src: './assets/gallery/16.jpg' },
+            { src: './assets/gallery/17.jpg' },
+            { src: './assets/gallery/18.jpg' },
+            { src: './assets/gallery/19.jpg' },
+            // { src: './assets/gallery/20.jpg' },
+            { src: './assets/gallery/21.jpg' },
+            { src: './assets/gallery/22.jpg' },
+            { src: './assets/gallery/23.jpg' },
+        ];
+
+        const portfolioGrid = document.getElementById('portfolioGrid');
+        const previewModal = document.getElementById('previewModal');
+        const previewImage = document.getElementById('previewImage');
+        const previewClose = document.getElementById('previewClose');
+
+        // Create portfolio items
+        works.forEach(work => {
+            const item = document.createElement('div');
+            item.className = 'portfolio-item';
+            
+            item.innerHTML = `<img src="${work.src}" alt="Portfolio Image" loading="lazy">`;
+
+            item.addEventListener('click', () => {
+                previewImage.src = work.src;
+                previewModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+
+            portfolioGrid.appendChild(item);
+        });
+
+        // Preview modal functionality
+        previewClose.addEventListener('click', () => {
+            previewModal.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && previewModal.style.display === 'block') {
+                previewModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>
