@@ -136,6 +136,130 @@
             background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
             animation: pulse 2s infinite;
         }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 99999;
+            opacity: 0.9;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .whatsapp-float:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #25D366;
+            opacity: 0.3;
+            z-index: -1;
+            animation: pulse 2s infinite;
+            top: 0;
+            left: 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.3); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Mobile Menu Styles */
+        #mobileMenu {
+            background: rgba(13, 13, 13, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        #mobileMenu a {
+            font-size: 1.25rem;
+            padding: 0.75rem 1.5rem;
+            display: block;
+            text-align: center;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        #mobileMenu a:hover {
+            color: #00f5ff;
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        #mobileMenu .font-semibold {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            padding: 0.5rem;
+        }
+
+        #closeMenu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 60;
+        }
+
+        #closeMenu:hover {
+            color: #00f5ff;
+        }
+
+        .mobile-menu-content {
+            padding: 4rem 2rem;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .mobile-menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-menu-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .mobile-menu-section a {
+            padding: 0.5rem 0;
+        }
     </style>
 </head>
 <body class="cyber-bg text-white font-futura">
@@ -175,19 +299,29 @@
                 </button>
             </div>
             <!-- Mobile Menu -->
-            <div class="md:hidden hidden" id="mobileMenu">
-                <div class="py-4 space-y-4">
-                    <a href="index.html" class="block hover:text-neon-blue transition-colors font-cyber">Home</a>
-                    <div class="space-y-2 pl-4">
-                        <div class="font-semibold text-neon-blue font-cyber">Portfolio</div>
-                        <a href="portfolio.html" class="block hover:text-neon-blue transition-colors font-cyber">Graphical</a>
-                        <a href="motion.html" class="block text-neon-blue font-cyber">Motion</a>
-                        <a href="programming.html" class="block hover:text-neon-blue transition-colors font-cyber">Programming</a>
+            <div id="mobileMenu" class="fixed inset-0 z-50 hidden">
+                <button id="closeMenu">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="mobile-menu-content">
+                    <div class="mobile-menu-items">
+                        <a href="index.html" class="font-cyber">Home</a>
+                        <div class="mobile-menu-section">
+                            <div class="text-neon-blue font-cyber flex items-center justify-center text-xl">
+                                Portfolio
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <a href="portfolio.html" class="font-cyber">Graphical</a>
+                            <a href="motion.html" class="font-cyber text-neon-blue bg-neon-blue bg-opacity-10">Motion</a>
+                            <a href="programming.html" class="font-cyber">Programming</a>
+                        </div>
+                        <a href="index.html#skills" class="font-cyber">Skills</a>
+                        <a href="index.html#education" class="font-cyber">Education</a>
+                        <a href="index.html#experience" class="font-cyber">Experience</a>
+                        <a href="index.html#contact" class="font-cyber">Contact</a>
                     </div>
-                    <a href="index.html#skills" class="block hover:text-neon-blue transition-colors font-cyber">Skills</a>
-                    <a href="index.html#education" class="block hover:text-neon-blue transition-colors font-cyber">Education</a>
-                    <a href="index.html#experience" class="block hover:text-neon-blue transition-colors font-cyber">Experience</a>
-                    <a href="index.html#contact" class="block hover:text-neon-blue transition-colors font-cyber">Contact</a>
                 </div>
             </div>
         </div>
@@ -221,14 +355,35 @@
         </div>
     </div>
 
+    <a href="https://wa.me/93702179686" target="_blank" class="whatsapp-float" title="Contact on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script>
         // Mobile menu toggle
         const menuButton = document.getElementById('menuButton');
         const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenu = document.getElementById('closeMenu');
 
-        menuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        function toggleMenu() {
+            const isOpen = mobileMenu.classList.contains('hidden');
+            if (isOpen) {
+                mobileMenu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+            } else {
+                mobileMenu.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+        }
+
+        menuButton.addEventListener('click', toggleMenu);
+        closeMenu.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking on a link
+        const mobileLinks = mobileMenu.getElementsByTagName('a');
+        for (const link of mobileLinks) {
+            link.addEventListener('click', toggleMenu);
+        }
 
         // Video gallery setup
         document.addEventListener('DOMContentLoaded', () => {
