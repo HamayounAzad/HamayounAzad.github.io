@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamayoun Azad - Creative Developer</title>
+    <link rel="icon" type="image/x-icon" href="./metadata/Logo/Logo Non zoom.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00F5FF',
+                        'neon-purple': '#8A2BE2',
+                        'deep-dark': '#0A0A0A',
+                        'glass': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'cyber': ['Orbitron', 'sans-serif'],
+                        'futura': ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cyber-bg {
+            background: linear-gradient(to bottom right, #0A0A0A, #4b0168);
+            position: relative;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+
+        .glass-card-hover {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        .neon-border {
+            position: relative;
+        }
+
+        .neon-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00F5FF, #8A2BE2);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .neon-border:hover::before {
+            opacity: 1;
+        }
+
+        .skill-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00F5FF, #8A2BE2);
+            border-radius: 2px;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1s ease;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 2rem;
+            border-left: 2px solid rgba(138, 43, 226, 0.5);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -0.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            background: #8A2BE2;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #8A2BE2;
+        }
+
+        .cyber-button {
+            position: relative;
+            background: transparent;
+            border: 2px solid #00F5FF;
+            color: #00F5FF;
+            padding: 0.75rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-button:hover {
+            background: #00F5FF;
+            color: #0A0A0A;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            background: rgba(0, 245, 255, 0.2);
+            border-radius: 50%;
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .cyber-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch-text {
+            position: relative;
+            animation: glitch 3s infinite;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            color: #00F5FF;
+            z-index: -1;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translate(-2px, -2px);
+            opacity: 0.75;
+        }
+
+        .glitch-text::after {
+            color: #8A2BE2;
+            z-index: -2;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+            transform: translate(2px, 2px);
+            opacity: 0.75;
+        }
+    </style>
+</head>
+<body class="cyber-bg text-white font-futura">
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-2xl font-cyber font-bold">
+                    <span class="text-neon-blue">Hamayoun</span> Azad
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-neon-blue font-cyber">Home</a>
+                    <div class="relative group">
+                        <button class="hover:text-neon-blue transition-colors flex items-center font-cyber">
+                            Portfolio
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-deep-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
+                            <div class="py-1">
+                                <a href="portfolio.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Graphical</a>
+                                <a href="motion.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Motion</a>
+                                <a href="programming.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Programming</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#skills" class="hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="#education" class="hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="#experience" class="hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="#contact" class="hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+                <button class="md:hidden" id="menuButton">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobileMenu">
+                <div class="py-4 space-y-4">
+                    <a href="index.html" class="block text-neon-blue font-cyber">Home</a>
+                    <div class="space-y-2 pl-4">
+                        <div class="font-semibold font-cyber">Portfolio</div>
+                        <a href="portfolio.html" class="block hover:text-neon-blue transition-colors font-cyber">Graphical</a>
+                        <a href="motion.html" class="block hover:text-neon-blue transition-colors font-cyber">Motion</a>
+                        <a href="programming.html" class="block hover:text-neon-blue transition-colors font-cyber">Programming</a>
+                    </div>
+                    <a href="#skills" class="block hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="#education" class="block hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="#experience" class="block hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="#contact" class="block hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Hero Section -->
+        <section class="min-h-screen flex items-center justify-center pt-20 relative">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h1 class="text-6xl md:text-8xl font-cyber font-bold mb-6 glitch-text" data-text="Hamayoun Azad">
+                            Hamayoun Azad
+                        </h1>
+                        <p class="text-xl text-neon-blue mb-8 font-cyber">Creative Developer & Digital Artist</p>
+                        <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                            <a href="#about" class="cyber-button">Explore</a>
+                            <a href="portfolio.html" class="cyber-button">View Work</a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="relative w-80 h-80 mx-auto">
+                            <div class="absolute inset-0 bg-gradient-to-r from-neon-blue to-neon-purple opacity-20 rounded-full animate-pulse"></div>
+                            <img src="./metadata/IMG_5016.jpg" alt="Hamayoun Azad" class="w-full h-full object-cover rounded-full border-4 border-neon-blue">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-32">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-cyber font-bold mb-16 text-center">Tech <span class="text-neon-blue">Stack</span></h2>
+                
+                <!-- Development Stack -->
+                <div class="max-w-4xl mx-auto mb-16">
+                    <h3 class="text-2xl font-cyber text-neon-purple mb-8 text-center">Development Stack</h3>
+                    <div class="glass-card p-8">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                            <!-- Frontend Technologies -->
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" class="w-12 h-12" alt="HTML5" />
+                                <span>HTML5</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" class="w-12 h-12" alt="CSS3" />
+                                <span>CSS3</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" class="w-12 h-12" alt="JavaScript" />
+                                <span>JavaScript</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" class="w-12 h-12" alt="React" />
+                                <span>React.js</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <svg class="w-12 h-12 text-neon-blue" viewBox="0 0 32 32" fill="none">
+                                    <path fill="currentColor" d="M9 13.7q1.4-5.6 7-5.6c5.6 0 6.3 4.2 9.1 4.9q2.8.7 4.9-2.1-1.4 5.6-7 5.6c-5.6 0-6.3-4.2-9.1-4.9q-2.8-.7-4.9 2.1Zm-7 8.4q1.4-5.6 7-5.6c5.6 0 6.3 4.2 9.1 4.9q2.8.7 4.9-2.1-1.4 5.6-7 5.6c-5.6 0-6.3-4.2-9.1-4.9q-2.8-.7-4.9 2.1Z"/>
+                                </svg>
+                                <span>Tailwind CSS</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" class="w-12 h-12" alt="Python" />
+                                <span>Python</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" class="w-12 h-12" alt="Django" />
+                                <span>Django</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" class="w-12 h-12" alt="Bootstrap" />
+                                <span>Bootstrap</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" class="w-12 h-12" alt="PHP" />
+                                <span>PHP</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img src="https://cdn.worldvectorlogo.com/logos/laravel-2.svg" class="w-12 h-12" alt="Laravel" />
+                                <span>Laravel</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design Stack -->
+                <div class="max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-cyber text-neon-purple mb-8 text-center">Graphic Design Stack</h3>
+                    <div class="glass-card p-8">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                            <!-- Adobe Photoshop -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#001E36] rounded-lg">
+                                    <span class="text-[#31A8FF] text-2xl font-bold">Ps</span>
+                                </div>
+                                <span>Photoshop</span>
+                            </div>
+                
+                            <!-- Adobe Illustrator -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#330000] rounded-lg">
+                                    <span class="text-[#FF9A00] text-2xl font-bold">Ai</span>
+                                </div>
+                                <span>Illustrator</span>
+                            </div>
+                
+                            <!-- Adobe After Effects -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#00005B] rounded-lg">
+                                    <span class="text-[#9999FF] text-2xl font-bold">Ae</span>
+                                </div>
+                                <span>After Effects</span>
+                            </div>
+                
+                            <!-- Adobe Premiere -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#00005B] rounded-lg">
+                                    <span class="text-[#9999FF] text-2xl font-bold">Pr</span>
+                                </div>
+                                <span>Premiere</span>
+                            </div>
+                
+                            <!-- Adobe Audition -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#00151F] rounded-lg">
+                                    <span class="text-[#00D8FF] text-2xl font-bold">Au</span>
+                                </div>
+                                <span>Audition</span>
+                            </div>
+                
+                            <!-- Adobe Media Encoder -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center bg-[#00005B] rounded-lg">
+                                    <span class="text-[#9999FF] text-2xl font-bold">Me</span>
+                                </div>
+                                <span>Media Encoder</span>
+                            </div>
+                
+                            <!-- 3ds MAX -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex flex-col items-center justify-center bg-[#1B9BDB] rounded-lg relative" style="transform: perspective(100px) rotateX(10deg) rotateY(-10deg)">
+                                    <span class="text-white text-2xl font-bold">3</span>
+                                    <span class="text-white text-xs absolute bottom-1">MAX</span>
+                                </div>
+                                <span>3ds MAX</span>
+                            </div>
+                
+                            <!-- Maya -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 flex flex-col items-center justify-center bg-[#1B9BDB] rounded-lg relative" style="transform: perspective(100px) rotateX(10deg) rotateY(-10deg)">
+                                    <span class="text-white text-2xl font-bold">M</span>
+                                    <span class="text-white text-xs absolute bottom-1">AYA</span>
+                                </div>
+                                <span>Maya</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+                <!-- Education Section -->
+        <section id="education" class="py-32">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-cyber font-bold mb-16 text-center">Education & <span class="text-neon-blue">Certifications</span></h2>
+                
+                <!-- Academic Background -->
+                <div class="max-w-4xl mx-auto mb-16">
+                    <div class="glass-card p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                            <div>
+                                <h4 class="text-xl font-bold text-neon-blue">High School Diploma</h4>
+                                <p class="text-gray-300">Haji Abdul Qadir High School</p>
+                                <p class="text-gray-400 mt-2">General Studies</p>
+                                <a href="./metadata/Certificates/School.jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Degree</a>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-neon-purple">2007 - 2019</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto mb-16">
+                    <div class="glass-card p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                            <div>
+                                <h4 class="text-xl font-bold text-neon-blue">Bachelor of Computer Science</h4>
+                                <p class="text-gray-300">Salam University</p>
+                                <p class="text-gray-400 mt-2">Focus on Software Engineering and Web Development</p>
+                                <!-- Button for view degree -->
+                                <!-- <a href="./metadata/Certificates/University.jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Degree</a> -->
+                            </div>
+                            <div class="text-right">
+                                <span class="text-neon-purple">2021 - Present</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications Grid -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Certification Card 1 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/IQRA(English).jpg" alt="English Language Diploma">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Diploma in English Language</h4>
+                            <p class="text-gray-300">Iqra Insstitute of modern studies</p>
+                            <p class="text-gray-400 mt-2">Completed: 2017</p>
+                            <a href="./metadata/Certificates/IQRA(English).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card 2 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/Udemy(Adobe Premiere).jpg" alt="Certificate 2">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certification on Video Editing in Adobe premiere pro</h4>
+                            <p class="text-gray-300">Udemy</p>
+                            <p class="text-gray-400 mt-2">Completed: 2020</p>
+                            <a href="./metadata/Certificates/Udemy(Adobe Premiere).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+                            
+                        <!-- Certification Card 3 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/Udemy(QuickBooks).jpg" alt="Certificate 3">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate of Completion in Quickbooks Pro</h4>
+                            <p class="text-gray-300">Udemy</p>
+                            <p class="text-gray-400 mt-2">Completed: 2020</p>
+                            <a href="./metadata/Certificates/Udemy(QuickBooks).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card 4 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/Udemy(Adobe After Effects).jpg" alt="Certificate 4">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate of Completion Adobe After Effect Motion Graphics Beast</h4>
+                            <p class="text-gray-300">Udemy</p>
+                            <p class="text-gray-400 mt-2">Completed: 2021</p>
+                            <a href="./metadata/Certificates/Udemy(Adobe After Effects).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card 5 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/DW(Graphic).jpg" alt="Certificate 5">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate in Motion and Graphic Designing</h4>
+                            <p class="text-gray-300">Dream World</p>
+                            <p class="text-gray-400 mt-2">Completed: 2021</p>
+                            <a href="./metadata/Certificates/DW(Graphic).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card 6 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/GPDI(WEB).jpg" alt="Certificate 6">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate of Full stack web development</h4>
+                            <p class="text-gray-300">GPDI</p>
+                            <p class="text-gray-400 mt-2">Completed: 2022</p>
+                            <a href="./metadata/Certificates/GPDI(WEB).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card 7 -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/Udemy(HTML,JS,BS).jpg" alt="Certificate 7">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate of Completion HTML, CSS and Bootstrap</h4>
+                            <p class="text-gray-300">Udemy</p>
+                            <p class="text-gray-400 mt-2">Completed: 2022</p>
+                            <a href="./metadata/Certificates/Udemy(HTML,JS,BS).jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                        <!-- Certification Card  -->
+                        <div class="glass-card p-6 hover:shadow-neon-purple transition-all duration-300">
+                            <div class="aspect-video mb-4 overflow-hidden rounded-lg bg-gray-800">
+                                <img class="w-full h-full object-contain" src="./metadata/Certificates/110069366.jpg" alt="Certificate 8">
+                            </div>
+                            <h4 class="text-lg font-bold text-neon-blue">Certificate of Completion Master MCSE: Windows Server 2022 OS Administration</h4>
+                            <p class="text-gray-300">Udemy</p>
+                            <p class="text-gray-400 mt-2">Completed: 2024</p>
+                            <a href="./metadata/Certificates/110069366.jpg" class="mt-4 inline-block px-4 py-2 border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black transition-all duration-300 rounded-lg">View Certificate</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Experience Section -->
+        <section id="experience" class="py-32">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-cyber font-bold mb-16 text-center">Work <span class="text-neon-purple">Experience</span></h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="space-y-12">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="glass-card p-6">
+                                <h3 class="text-xl font-cyber text-neon-blue mb-2">Intern and Instractor in Graphic And Motion Designer</h3>
+                                <p class="text-sm text-gray-400 mb-4">DW ( Dream World). | 3.2021 - 10.2021</p>
+                                <p class="text-gray-300">
+                                    Intern and Instractor as Graphic and Motion Designing.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="glass-card p-6">
+                                <h3 class="text-xl font-cyber text-neon-purple mb-2">Graphic and Motion Designer</h3>
+                                <p class="text-sm text-gray-400 mb-4">GEC (Global Educational Center) | 01.2022 - 11.2022</p>
+                                <p class="text-gray-300">
+                                    Worked As Graphic and Motion Designer, and IT support.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="glass-card p-6">
+                                <h3 class="text-xl font-cyber text-neon-blue mb-2">Software Developer</h3>
+                                <p class="text-sm text-gray-400 mb-4">DW ( Dream World). | 6.2023 - Present</p>
+                                <p class="text-gray-300">
+                                    Working as Software Developer.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-32">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-cyber font-bold mb-16 text-center">Let's <span class="text-neon-blue">Connect</span></h2>
+                <div class="max-w-4xl mx-auto glass-card-hover p-8">
+                    <div class="grid md:grid-cols-2 gap-12">
+                        <div>
+                            <h3 class="text-xl font-cyber mb-6 text-neon-purple">Contact Info</h3>
+                            <div class="space-y-4">
+                                <p class="flex items-center">
+                                    <i class="fas fa-envelope w-8 text-neon-blue"></i>
+                                    Hamayoun.azad3@gmail.com
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-phone w-8 text-neon-blue"></i>
+                                    +93 70 217 9686 <br>
+                                    +93 74 909 0686 <br>
+                                    +93 70 023 0047 
+                                </p>
+                                <p class="flex items-center">
+                                    <i class="fas fa-map-marker-alt w-8 text-neon-blue"></i>
+                                    Kabul, Afghanistan
+                                </p>
+                            </div>
+                        </div>
+                        <form class="space-y-6">
+                            <div>
+                                <input type="text" placeholder="Your Name" 
+                                    class="w-full px-4 py-3 bg-transparent border-2 border-neon-blue rounded-lg focus:outline-none focus:border-neon-purple transition-colors">
+                            </div>
+                            <div>
+                                <input type="email" placeholder="Your Email" 
+                                    class="w-full px-4 py-3 bg-transparent border-2 border-neon-blue rounded-lg focus:outline-none focus:border-neon-purple transition-colors">
+                            </div>
+                            <div>
+                                <textarea placeholder="Your Message" rows="4" 
+                                    class="w-full px-4 py-3 bg-transparent border-2 border-neon-blue rounded-lg focus:outline-none focus:border-neon-purple transition-colors"></textarea>
+                            </div>
+                            <button type="submit" class="cyber-button w-full">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-8 glass-card mt-20">
+            <div class="container mx-auto px-6 text-center">
+                <p class="text-gray-400"> 2025 Hamayoun Azad. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

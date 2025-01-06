@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Graphics - Hamayoun Azad</title>
+    <link rel="icon" type="image/x-icon" href="./metadata/Logo/Logo Non zoom.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00F5FF',
+                        'neon-purple': '#8A2BE2',
+                        'deep-dark': '#0A0A0A',
+                        'glass': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'cyber': ['Orbitron', 'sans-serif'],
+                        'futura': ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cyber-bg {
+            background: linear-gradient(to bottom right, #0A0A0A, #4b0168);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .video-card {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: scale(1.02);
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: #00F5FF;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -2rem;
+            right: 0;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+        }
+
+        .placeholder {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="cyber-bg text-white font-futura">
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-2xl font-cyber font-bold">
+                    <span class="text-neon-blue">Hamayoun</span> Azad
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-neon-blue transition-colors font-cyber">Home</a>
+                    <div class="relative group">
+                        <button class="text-neon-blue transition-colors flex items-center font-cyber">
+                            Portfolio
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-deep-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
+                            <div class="py-1">
+                                <a href="portfolio.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Graphical</a>
+                                <a href="motion.html" class="block px-4 py-2 text-neon-blue font-cyber">Motion</a>
+                                <a href="programming.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Programming</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="index.html#skills" class="hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="index.html#education" class="hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="index.html#experience" class="hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="index.html#contact" class="hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+                <button class="md:hidden" id="menuButton">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobileMenu">
+                <div class="py-4 space-y-4">
+                    <a href="index.html" class="block hover:text-neon-blue transition-colors font-cyber">Home</a>
+                    <div class="space-y-2 pl-4">
+                        <div class="font-semibold text-neon-blue font-cyber">Portfolio</div>
+                        <a href="portfolio.html" class="block hover:text-neon-blue transition-colors font-cyber">Graphical</a>
+                        <a href="motion.html" class="block text-neon-blue font-cyber">Motion</a>
+                        <a href="programming.html" class="block hover:text-neon-blue transition-colors font-cyber">Programming</a>
+                    </div>
+                    <a href="index.html#skills" class="block hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="index.html#education" class="block hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="index.html#experience" class="block hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="index.html#contact" class="block hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Motion Graphics Hero -->
+        <section class="min-h-[50vh] flex items-center justify-center pt-20">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-6xl font-cyber font-bold mb-6">Motion <span class="text-neon-blue">Graphics</span></h1>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto">Experience a collection of dynamic motion graphics and animations that bring ideas to life.</p>
+            </div>
+        </section>
+
+        <!-- Video Grid -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <div class="video-grid" id="videoGrid"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="modalVideo" class="w-full h-full" controls></video>
+            <div class="loading-bar" id="loadingProgress"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.getElementById('menuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Video gallery setup
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = [
+                { id: '1', video: 'assets/motion/1.mp4' },
+                { id: '2', video: 'assets/motion/2.mp4' },
+                { id: '3', video: 'assets/motion/3.mp4' },
+                { id: '4', video: 'assets/motion/4.mp4' },
+                { id: '5', video: 'assets/motion/5.mp4' },
+                { id: '6', video: 'assets/motion/6.mp4' },
+                { id: '7', video: 'assets/motion/7.mp4' },
+                { id: '8', video: 'assets/motion/8.mp4' },
+                { id: '9', video: 'assets/motion/9.mp4' },
+                { id: '10', video: 'assets/motion/10.mp4' },
+                { id: '11', video: 'assets/motion/11.mp4' }
+            ];
+
+            const videoGrid = document.getElementById('videoGrid');
+            const videoModal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const loadingProgress = document.getElementById('loadingProgress');
+
+            // Function to generate video thumbnail
+            async function generateThumbnail(videoUrl) {
+                return new Promise((resolve) => {
+                    const tempVideo = document.createElement('video');
+                    tempVideo.style.display = 'none';
+                    document.body.appendChild(tempVideo);
+
+                    tempVideo.addEventListener('loadeddata', function() {
+                        // Create temporary canvas
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        
+                        // Set dimensions
+                        canvas.width = 480;
+                        canvas.height = 270; // 16:9 aspect ratio
+                        
+                        // Draw the video frame
+                        context.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+                        
+                        // Convert to data URL
+                        const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        
+                        // Cleanup
+                        document.body.removeChild(tempVideo);
+                        
+                        resolve(thumbnailUrl);
+                    });
+
+                    tempVideo.addEventListener('error', function() {
+                        document.body.removeChild(tempVideo);
+                        resolve(null);
+                    });
+
+                    // Set video properties
+                    tempVideo.crossOrigin = 'anonymous';
+                    tempVideo.src = videoUrl;
+                    tempVideo.currentTime = 1; // Capture frame at 1 second
+                });
+            }
+
+            // Create video cards with lazy loading
+            function createVideoCards() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const card = entry.target;
+                            const videoUrl = card.dataset.video;
+                            
+                            // Try to generate thumbnail
+                            generateThumbnail(videoUrl).then(thumbnailUrl => {
+                                if (thumbnailUrl) {
+                                    const img = card.querySelector('.video-thumbnail');
+                                    img.src = thumbnailUrl;
+                                    img.onload = () => {
+                                        card.querySelector('.placeholder').style.display = 'none';
+                                    };
+                                }
+                            }).catch(error => {
+                                console.error('Error generating thumbnail:', error);
+                            });
+                            
+                            observer.unobserve(card);
+                        }
+                    });
+                }, {
+                    rootMargin: '50px 0px',
+                    threshold: 0.1
+                });
+
+                videos.forEach((video, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'video-card glass-card';
+                    card.dataset.video = video.video;
+                    
+                    card.innerHTML = `
+                        <div class="placeholder"></div>
+                        <img class="video-thumbnail" alt="Video thumbnail ${video.id}">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
+                                <i class="fas fa-play text-2xl text-neon-blue"></i>
+                            </div>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => showVideo(video));
+                    videoGrid.appendChild(card);
+
+                    // Load first 4 thumbnails immediately
+                    if (index < 4) {
+                        generateThumbnail(video.video).then(thumbnailUrl => {
+                            if (thumbnailUrl) {
+                                const img = card.querySelector('.video-thumbnail');
+                                img.src = thumbnailUrl;
+                                img.onload = () => {
+                                    card.querySelector('.placeholder').style.display = 'none';
+                                };
+                            }
+                        }).catch(error => {
+                            console.error('Error generating thumbnail:', error);
+                        });
+                    } else {
+                        observer.observe(card);
+                    }
+                });
+            }
+
+            // Show video in modal
+            function showVideo(video) {
+                videoModal.classList.add('active');
+                loadingProgress.style.width = '0%';
+                
+                modalVideo.addEventListener('progress', () => {
+                    if (modalVideo.buffered.length > 0) {
+                        const percentage = (modalVideo.buffered.end(0) / modalVideo.duration) * 100;
+                        loadingProgress.style.width = `${percentage}%`;
+                    }
+                });
+
+                modalVideo.src = video.video;
+                modalVideo.play().catch(() => {
+                    console.log('Failed to autoplay video');
+                });
+            }
+
+            // Modal controls
+            document.getElementById('modalClose').addEventListener('click', () => {
+                videoModal.classList.remove('active');
+                modalVideo.pause();
+                modalVideo.src = '';
+            });
+
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    videoModal.classList.remove('active');
+                    modalVideo.pause();
+                    modalVideo.src = '';
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+                    videoModal.classList.remove('active');
+                    modalVideo.pause();
+                    modalVideo.src = '';
+                }
+            });
+
+            // Initialize video cards
+            createVideoCards();
+        });
+    </script>
+</body>
+</html>

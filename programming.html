@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Portfolio - Hamayoun Azad</title>
+    <link rel="icon" type="image/x-icon" href="./metadata/Logo/Logo Non zoom.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00F5FF',
+                        'neon-purple': '#8A2BE2',
+                        'deep-dark': '#0A0A0A',
+                        'glass': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'cyber': ['Orbitron', 'sans-serif'],
+                        'futura': ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cyber-bg {
+            background: linear-gradient(to bottom right, #0A0A0A, #4b0168);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 245, 255, 0.1);
+        }
+
+        .project-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tech-tag {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 1rem;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            color: #00F5FF;
+            transition: background-color 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(0, 245, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="cyber-bg text-white font-futura">
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-2xl font-cyber font-bold">
+                    <span class="text-neon-blue">Hamayoun</span> Azad
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-neon-blue transition-colors font-cyber">Home</a>
+                    <div class="relative group">
+                        <button class="text-neon-blue transition-colors flex items-center font-cyber">
+                            Portfolio
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-deep-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right">
+                            <div class="py-1">
+                                <a href="portfolio.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Graphical</a>
+                                <a href="motion.html" class="block px-4 py-2 hover:bg-neon-purple/20 hover:text-neon-blue font-cyber">Motion</a>
+                                <a href="programming.html" class="block px-4 py-2 text-neon-blue font-cyber">Programming</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="index.html#skills" class="hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="index.html#education" class="hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="index.html#experience" class="hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="index.html#contact" class="hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+                <button class="md:hidden" id="menuButton">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobileMenu">
+                <div class="py-4 space-y-4">
+                    <a href="index.html" class="block hover:text-neon-blue transition-colors font-cyber">Home</a>
+                    <div class="space-y-2 pl-4">
+                        <div class="font-semibold text-neon-blue font-cyber">Portfolio</div>
+                        <a href="portfolio.html" class="block hover:text-neon-blue transition-colors font-cyber">Graphical</a>
+                        <a href="motion.html" class="block hover:text-neon-blue transition-colors font-cyber">Motion</a>
+                        <a href="programming.html" class="block text-neon-blue font-cyber">Programming</a>
+                    </div>
+                    <a href="index.html#skills" class="block hover:text-neon-blue transition-colors font-cyber">Skills</a>
+                    <a href="index.html#education" class="block hover:text-neon-blue transition-colors font-cyber">Education</a>
+                    <a href="index.html#experience" class="block hover:text-neon-blue transition-colors font-cyber">Experience</a>
+                    <a href="index.html#contact" class="block hover:text-neon-blue transition-colors font-cyber">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- Programming Hero -->
+        <section class="min-h-[50vh] flex items-center justify-center pt-20">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-6xl font-cyber font-bold mb-6">Programming <span class="text-neon-blue">Projects</span></h1>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto">Explore my collection of programming projects showcasing various technologies and solutions.</p>
+            </div>
+        </section>
+
+        <!-- Projects Grid -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Project 1 -->
+                    <div class="glass-card p-6 project-card">
+                        <h3 class="text-2xl font-cyber font-bold mb-4">Portfolio Website</h3>
+                        <p class="text-gray-300 mb-4 flex-grow">A modern, cyberpunk-themed portfolio website built with HTML, Tailwind CSS, and JavaScript.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag">Tailwind CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <a href="https://github.com/yourusername/portfolio" target="_blank" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="#" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="glass-card p-6 project-card">
+                        <h3 class="text-2xl font-cyber font-bold mb-4">E-commerce Platform</h3>
+                        <p class="text-gray-300 mb-4 flex-grow">A full-stack e-commerce solution with user authentication, product management, and payment integration.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">MongoDB</span>
+                            <span class="tech-tag">Stripe</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <a href="https://github.com/yourusername/ecommerce" target="_blank" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="#" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="glass-card p-6 project-card">
+                        <h3 class="text-2xl font-cyber font-bold mb-4">Task Management App</h3>
+                        <p class="text-gray-300 mb-4 flex-grow">A real-time task management application with team collaboration features and progress tracking.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tech-tag">Vue.js</span>
+                            <span class="tech-tag">Firebase</span>
+                            <span class="tech-tag">Vuex</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <a href="https://github.com/yourusername/task-manager" target="_blank" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="#" class="text-neon-blue hover:text-neon-purple transition-colors">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.getElementById('menuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
