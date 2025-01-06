@@ -388,17 +388,17 @@
         // Video gallery setup
         document.addEventListener('DOMContentLoaded', () => {
             const videos = [
-                { id: '1', video: 'assets/motion/1.mp4' },
-                { id: '2', video: 'assets/motion/2.mp4' },
-                { id: '3', video: 'assets/motion/3.mp4' },
-                { id: '4', video: 'assets/motion/4.mp4' },
-                { id: '5', video: 'assets/motion/5.mp4' },
-                { id: '6', video: 'assets/motion/6.mp4' },
-                { id: '7', video: 'assets/motion/7.mp4' },
-                { id: '8', video: 'assets/motion/8.mp4' },
-                { id: '9', video: 'assets/motion/9.mp4' },
-                { id: '10', video: 'assets/motion/10.mp4' },
-                { id: '11', video: 'assets/motion/11.mp4' }
+                { id: '1', video: './assets/motions/1.mp4' },
+                { id: '2', video: './assets/motions/2.mp4' },
+                { id: '3', video: './assets/motions/3.mp4' },
+                { id: '4', video: './assets/motions/4.mp4' },
+                { id: '5', video: './assets/motions/5.mp4' },
+                { id: '6', video: './assets/motions/6.mp4' },
+                { id: '7', video: './assets/motions/7.mp4' },
+                { id: '8', video: './assets/motions/8.mp4' },
+                { id: '9', video: './assets/motions/9.mp4' },
+                { id: '10', video: './assets/motions/10.mp4' },
+                { id: '11', video: './assets/motions/11.mp4' }
             ];
 
             const videoGrid = document.getElementById('videoGrid');
@@ -406,109 +406,55 @@
             const modalVideo = document.getElementById('modalVideo');
             const loadingProgress = document.getElementById('loadingProgress');
 
-            // Function to generate video thumbnail
-            async function generateThumbnail(videoUrl) {
-                return new Promise((resolve) => {
-                    const tempVideo = document.createElement('video');
-                    tempVideo.style.display = 'none';
-                    document.body.appendChild(tempVideo);
-
-                    tempVideo.addEventListener('loadeddata', function() {
-                        // Create temporary canvas
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        
-                        // Set dimensions
-                        canvas.width = 480;
-                        canvas.height = 270; // 16:9 aspect ratio
-                        
-                        // Draw the video frame
-                        context.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
-                        
-                        // Convert to data URL
-                        const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.7);
-                        
-                        // Cleanup
-                        document.body.removeChild(tempVideo);
-                        
-                        resolve(thumbnailUrl);
-                    });
-
-                    tempVideo.addEventListener('error', function() {
-                        document.body.removeChild(tempVideo);
-                        resolve(null);
-                    });
-
-                    // Set video properties
-                    tempVideo.crossOrigin = 'anonymous';
-                    tempVideo.src = videoUrl;
-                    tempVideo.currentTime = 1; // Capture frame at 1 second
-                });
-            }
-
-            // Create video cards with lazy loading
+            // Create video cards
             function createVideoCards() {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const card = entry.target;
-                            const videoUrl = card.dataset.video;
-                            
-                            // Try to generate thumbnail
-                            generateThumbnail(videoUrl).then(thumbnailUrl => {
-                                if (thumbnailUrl) {
-                                    const img = card.querySelector('.video-thumbnail');
-                                    img.src = thumbnailUrl;
-                                    img.onload = () => {
-                                        card.querySelector('.placeholder').style.display = 'none';
-                                    };
-                                }
-                            }).catch(error => {
-                                console.error('Error generating thumbnail:', error);
-                            });
-                            
-                            observer.unobserve(card);
-                        }
-                    });
-                }, {
-                    rootMargin: '50px 0px',
-                    threshold: 0.1
-                });
-
-                videos.forEach((video, index) => {
+                videos.forEach((video) => {
                     const card = document.createElement('div');
-                    card.className = 'video-card glass-card';
+                    card.className = 'video-card glass-card relative overflow-hidden';
                     card.dataset.video = video.video;
                     
-                    card.innerHTML = `
-                        <div class="placeholder"></div>
-                        <img class="video-thumbnail" alt="Video thumbnail ${video.id}">
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                            <div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
-                                <i class="fas fa-play text-2xl text-neon-blue"></i>
-                            </div>
+                    // Create video element for thumbnail
+                    const videoElement = document.createElement('video');
+                    videoElement.className = 'w-full h-full object-cover';
+                    videoElement.src = video.video;
+                    videoElement.muted = true;
+                    videoElement.playsInline = true;
+                    videoElement.preload = 'metadata';
+                    
+                    // Add play overlay
+                    const overlay = document.createElement('div');
+                    overlay.className = 'absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black/30';
+                    overlay.innerHTML = `
+                        <div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
+                            <i class="fas fa-play text-2xl text-neon-blue"></i>
                         </div>
                     `;
 
-                    card.addEventListener('click', () => showVideo(video));
+                    // Add hover effect
+                    card.addEventListener('mouseenter', () => {
+                        videoElement.currentTime = 0;
+                        videoElement.play();
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        videoElement.pause();
+                        videoElement.currentTime = 0;
+                    });
+
+                    // Add click handler for modal
+                    card.addEventListener('click', () => {
+                        videoElement.pause();
+                        showVideo(video);
+                    });
+
+                    card.appendChild(videoElement);
+                    card.appendChild(overlay);
                     videoGrid.appendChild(card);
 
-                    // Load first 4 thumbnails immediately
-                    if (index < 4) {
-                        generateThumbnail(video.video).then(thumbnailUrl => {
-                            if (thumbnailUrl) {
-                                const img = card.querySelector('.video-thumbnail');
-                                img.src = thumbnailUrl;
-                                img.onload = () => {
-                                    card.querySelector('.placeholder').style.display = 'none';
-                                };
-                            }
-                        }).catch(error => {
-                            console.error('Error generating thumbnail:', error);
-                        });
-                    } else {
-                        observer.observe(card);
-                    }
+                    // Set initial thumbnail frame
+                    videoElement.addEventListener('loadeddata', () => {
+                        videoElement.currentTime = 1;
+                    });
                 });
             }
 
